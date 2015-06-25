@@ -151,7 +151,7 @@ def score_transition(a, b):
     return score
 
 
-
+##################
 
 
 def score_chords():

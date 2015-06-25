@@ -230,7 +230,7 @@ class Piece(object):
         # Make Metadata
         timestamp = datetime.datetime.utcnow()
         metadata = Metadata()
-        metadata.title = 'Utah'
+        metadata.title = 'Short Stories'
         metadata.composer = 'Jonathan Marmor'
         metadata.date = timestamp.strftime('%Y/%m/%d')
         score.insert(0, metadata)
@@ -914,58 +914,58 @@ class Song(object):
 
 
     def add_scalar_ornament(self, note, prev, harmonies):
-            interval = prev['pitch'] - note['pitch']
-            if interval > 0:
-                direction = 'ascending'
-            if interval < 0:
-                direction = 'descending'
-            if interval == 0:
-                direction = random.choice(['ascending', 'descending'])
+        interval = prev['pitch'] - note['pitch']
+        if interval > 0:
+            direction = 'ascending'
+        if interval < 0:
+            direction = 'descending'
+        if interval == 0:
+            direction = random.choice(['ascending', 'descending'])
 
-            # Choose the number of notes in the ornament
-            if prev['duration'] >= 1:
-                n = weighted_choice([1, 2, 3, 4, 5, 6], [2, 3, 4, 6, 5, 4])
-            elif prev['duration'] >= 0.75:
-                n = weighted_choice([1, 2, 3], [1, 2, 4])
-            else:
-                n = random.randint(1, 2)
+        # Choose the number of notes in the ornament
+        if prev['duration'] >= 1:
+            n = weighted_choice([1, 2, 3, 4, 5, 6], [2, 3, 4, 6, 5, 4])
+        elif prev['duration'] >= 0.75:
+            n = weighted_choice([1, 2, 3], [1, 2, 4])
+        else:
+            n = random.randint(1, 2)
 
-            orn = scalar_ornaments.choose(n, direction)
+        orn = scalar_ornaments.choose(n, direction)
 
-            harm = []
-            for chord in harmonies:
-                for p in chord:
-                    if p not in harm:
-                        harm.append(p)
+        harm = []
+        for chord in harmonies:
+            for p in chord:
+                if p not in harm:
+                    harm.append(p)
 
-            scale_options = diatonic_scales_for_harmony(harm)
+        scale_options = diatonic_scales_for_harmony(harm)
 
-            if random.random() < .16 or not scale_options:
-                scale_options = other_scales_for_harmony(harm)
+        if random.random() < .16 or not scale_options:
+            scale_options = other_scales_for_harmony(harm)
 
-            if scale_options:
-                scale_type = random.choice(scale_options)
+        if scale_options:
+            scale_type = random.choice(scale_options)
 
-                note_pitch = int(note['pitch'])
+            note_pitch = int(note['pitch'])
 
-                note_pitch_class = note_pitch % 12
+            note_pitch_class = note_pitch % 12
 
-                diff = note_pitch - note_pitch_class
-                scale = []
-                for octave in [diff - 12, diff, diff + 12]:
-                    for pc in scale_type:
-                        p = pc + octave
-                        scale.append(p)
+            diff = note_pitch - note_pitch_class
+            scale = []
+            for octave in [diff - 12, diff, diff + 12]:
+                for pc in scale_type:
+                    p = pc + octave
+                    scale.append(p)
 
-                i = scale.index(note_pitch)
-                scale = scale[i - 2:i + 3]
+            i = scale.index(note_pitch)
+            scale = scale[i - 2:i + 3]
 
-                orn_type = []
-                for i in orn:
-                    pitch = scale[i + 2]
-                    orn_type.append(pitch)
+            orn_type = []
+            for i in orn:
+                pitch = scale[i + 2]
+                orn_type.append(pitch)
 
-                return orn_type
+            return orn_type
 
     def add_chromatic_interval(self, note, prev):
         interval = prev['pitch'] - note['pitch']
