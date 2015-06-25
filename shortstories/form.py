@@ -1,3 +1,4 @@
+import os
 import random
 from collections import Counter
 
@@ -58,7 +59,8 @@ class BarType(object):
 
 
 def parse_file():
-    filename = '/Users/jmarmor/repos/jonathanmarmor/montreal/montreal/forms.txt'
+    here = os.path.dirname(os.path.realpath(__file__))
+    filename = os.path.join(here, 'forms.txt')
     return [line for line in open(filename)]
 
 
