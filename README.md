@@ -16,3 +16,11 @@ Kristin Olson, oboe<br>
 Gavin Ryan, vibraphone<br>
 Stephanie Richards, trumpet<br>
 Christine Tavolacci, flute<br>
+
+## Run it
+
+    pip install -r requirements.txt
+    ./shortstories/shortstories.py
+
+You'll need to install Sibelius.
+It's super buggy, so you may need to run it a few times before it runs without raising an exception.
