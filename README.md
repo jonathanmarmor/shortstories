@@ -1,7 +1,18 @@
-# Montreal
+# Short Stories
 
-A piece of music to be performed in Montreal.
+A piece of music by Jonathan Marmor
+commissioned by [Listen/Space](https://listenspacemusic.wordpress.com/about/)
+recorded outside Park City, Utah, June 24-28, 2015
 
-## Disclaimer
+performed by
 
-This is some of the sloppiest, most improvised code I've ever written. Sorry. The only thing that mattered was the output at the time I was writting it. Don't judge.
+Eric KM Clark, violin
+Kevin Farrell, bass
+Nathan Herrera, alto sax
+Katie Porter Maxwell, clarinet, producer
+Devin Maxwell, conductor, engineer, producer
+Andrew Munsey, engineer
+Kristin Olson, oboe
+Gavin Ryan, vibraphone
+Stephanie Richards, trumpet
+Christine Tavolacci, flute
