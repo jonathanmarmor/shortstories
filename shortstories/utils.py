@@ -64,9 +64,14 @@ def fill(dur, min_note_dur=1):
 
 
 def frange(x, y, step=1.0):
-    while x < y:
-        yield x
-        x += step
+    if step > 0:
+        while x < y:
+            yield x
+            x += step
+    if step < 0:
+        while x > y:
+            yield x
+            x += step
 
 
 def random_split(items):

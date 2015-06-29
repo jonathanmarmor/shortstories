@@ -1,6 +1,17 @@
-import itertools
+#! /usr/bin/env python
 
-from utils import weighted_choice
+import itertools
+import random
+
+
+def weighted_choice(options, weights):
+    rand = random.random()
+    rand = scale(rand, 0, 1, 0, sum(weights))
+    total = 0
+    for i, weight in enumerate(weights):
+        total += weight
+        if rand < total:
+            return options[i]
 
 
 def validate(array):
@@ -63,6 +74,9 @@ def build_group_weights():
         build_form_weights(8),
         build_form_weights(9)
     ]
+    # print '*' * 80
+    # print options
+    # print '*' * 80
     return options, weights
 
 

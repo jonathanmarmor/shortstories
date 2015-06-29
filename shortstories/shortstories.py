@@ -25,22 +25,13 @@ from music21.layout import StaffGroup
 from music21.tempo import MetronomeMark
 from music21.duration import Duration
 
-from utils import weighted_choice
-from utils import count_intervals
-from utils import frange
-from utils import fill
-from utils import divide
-from utils import split_at_beats
-from utils import join_quarters
-from utils import scale
-from utils import S
-from utils import get_simul
-from utils import set_start_end
-from utils import get_at
-from utils import get_by_attr
+from utils import (weighted_choice, count_intervals, frange, fill, divide,
+    split_at_beats, join_quarters, scale, S, get_simul, set_start_end, get_at,
+    get_by_attr)
 import harmonic_rhythm
 import form
-from chord_types import get_chord_type, diatonic_scales_for_harmony, other_scales_for_harmony
+from chord_types import (get_chord_type, diatonic_scales_for_harmony,
+    other_scales_for_harmony)
 from melody_rhythm import get_melody_rhythm
 import scored_ornaments
 from bass import next_bass_note
@@ -52,17 +43,6 @@ import scalar_ornaments
 
 
 soloists_history = Counter()
-
-
-def frange(x, y, step=1.0):
-    if step > 0:
-        while x < y:
-            yield x
-            x += step
-    if step < 0:
-        while x > y:
-            yield x
-            x += step
 
 
 def choose(options, chosen):
@@ -268,18 +248,19 @@ class Piece(object):
         piece_duration_minutes = scale(random.random(), 0, 1, 8, max_duration)
 
         # Make the "songs"
-        songs = []
+        self.songs = []
         total_minutes = 0
         n = 1
         while total_minutes < piece_duration_minutes - .75:
             print
             print 'Song', n
             song = Song(self, n)
-            songs.append(song)
-            n += 1
+            self.songs.append(song)
             print 'Song Duration:', int(round(song.duration_minutes * 60.0))
             print 'Tempo:', song.tempo
             print 'Number of Beats:', song.duration_beats
+
+            n += 1
             total_minutes += song.duration_minutes
 
         _minutes, _seconds = divmod(total_minutes, 1.0)
@@ -287,9 +268,12 @@ class Piece(object):
         print 'Total Duration: {}:{}'.format(int(_minutes), int(round(_seconds * 60)))
         print
 
+        self.make_notation()
+
+    def make_notation(self):
         # Make notation
         previous_duration = None
-        for song in songs:
+        for song in self.songs:
             for bar in song.bars:
                 for part in bar.parts:
                     measure = Measure()
