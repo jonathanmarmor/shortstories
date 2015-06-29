@@ -3,7 +3,7 @@
 import sys
 import datetime
 import random
-from collections import defaultdict, Counter
+from collections import Counter
 
 from music21.note import Note, Rest
 from music21.pitch import Pitch
@@ -25,8 +25,8 @@ from music21.layout import StaffGroup
 from music21.tempo import MetronomeMark
 from music21.duration import Duration
 
-from utils import (weighted_choice, frange,
-    split_at_beats, join_quarters, scale, S, set_start_end, get_at)
+from utils import (weighted_choice, frange, split_at_beats, join_quarters,
+    scale, set_start_end, get_at)
 import harmonic_rhythm
 import form
 from chord_types import (get_chord_type, diatonic_scales_for_harmony,
@@ -54,7 +54,7 @@ def choose(options, chosen):
 def ornament_bridge(a, b, n=None, prev_duration=0.75, width=2):
     """Find notes that bridge the interval between a and b"""
 
-    if n == None:
+    if n is None:
         # Choose the number of notes in the ornament
         if prev_duration >= 0.75:
             n = weighted_choice([1, 2, 3, 4, 5, 6], [3, 3, 4, 5, 4, 3])
@@ -62,7 +62,6 @@ def ornament_bridge(a, b, n=None, prev_duration=0.75, width=2):
             n = weighted_choice([1, 2, 3], [3, 4, 5])
 
     interval = b - a
-    abs_interval = abs(interval)
     direction = 0
     if interval > 0:
         direction = 1
@@ -205,7 +204,6 @@ class Piece(object):
         self.instruments = self.i = Instruments()
         self.parts = Parts(self.i)
 
-
         # Make Metadata
         timestamp = datetime.datetime.utcnow()
         metadata = Metadata()
@@ -291,7 +289,6 @@ class Piece(object):
                     for note, components in zip(part['notes'], components_list):
                         note['durations'] = components
 
-
                     for note in part['notes']:
                         if note['pitch'] == 'rest':
                             n = Rest()
@@ -348,21 +345,16 @@ class Song(object):
 
         self.melody_register = self.instruments.soloists_shared_register()
 
-
         history = {}
         for name in self.instruments.names:
             history[name] = []
-
-
 
         self.form = form.choose()
 
         print self.form.form_string
 
         self.bars = self.form.bars
-
         self.duration_beats = self.form.duration
-
 
         if self.movement <= 5:
             # Medium
@@ -382,20 +374,18 @@ class Song(object):
 
         self.tempo = random.choice(tempo_options)
 
-
         self.bars[0].tempo = self.tempo
         self.duration_minutes = self.duration_beats / float(self.tempo)
-
 
         root = random.randint(0, 12)
         self.harmony_history = [[(p * root) % 12 for p in get_chord_type()]]
 
-
-
         # for each bar_type pick a transposition pattern
-        # for each bar of that type, assign the next transposition in the pattern
-        # make a sub register of the soloists' common register for the bar_type,
-        # that has a buffer to allow the melody to be transposed the amount that it will be transposed
+        # for each bar of that type, assign the next transposition in the
+        # pattern
+        # make a sub register of the soloists' common register for the
+        # bar_type, that has a buffer to allow the melody to be transposed the
+        # amount that it will be transposed
         trans_patterns = {
             'descending': [
                 [0, -1, -2, -3, -4],
@@ -420,7 +410,6 @@ class Song(object):
             bar_type.trans_pattern = random.choice(options)
             bar_type.trans_pattern = bar_type.trans_pattern[:bar_type.count + 1]
 
-
             if bar_type.direction == 'descending':
                 bar_type.furthest_transposition = min(bar_type.trans_pattern)
                 bar_type.register = self.melody_register[abs(bar_type.furthest_transposition):]
@@ -435,7 +424,6 @@ class Song(object):
             bar.transposition = bar_type.trans_pattern[i]
             bar_type_counter[bar.type] += 1
 
-
         for name in self.form.bar_types:
             bar_type = self.form.bar_types[name]
             bar_type.harmonic_rhythm = harmonic_rhythm.choose(bar_type.duration)
@@ -448,7 +436,10 @@ class Song(object):
 
                 # print 'CHORD TYPE:', chord_type
 
-                harmony = animal_play_harmony.choose_next_harmony(self.harmony_history, chord_type)
+                harmony = animal_play_harmony.choose_next_harmony(
+                    self.harmony_history,
+                    chord_type
+                )
                 self.harmony_history.append(harmony)
 
                 # print 'HARMONY:', harmony
@@ -460,11 +451,13 @@ class Song(object):
                 bar_type.harmony.append(h)
 
             # Melody
-            bar_type.melody = self.choose_melody_notes(bar_type.duration, bar_type.harmony, bar_type)
+            bar_type.melody = self.choose_melody_notes(
+                bar_type.duration,
+                bar_type.harmony,
+                bar_type
+            )
 
-
-        #### Turn Bar Types into Bars
-
+        # Turn Bar Types into Bars
 
         size = 1
         for bar in self.bars:
@@ -517,7 +510,6 @@ class Song(object):
 
             soloists_history[tuple(sorted(soloists))] += 1
 
-
             # transposition = weighted_choice(
             #     [-2, -1, 1, 2],
             #     [10, 12, 8, 12]
@@ -534,7 +526,6 @@ class Song(object):
                     })
                 bar.harmony = harmony
 
-
             # Violin
             violin_lowest = self.piece.instruments.vln.lowest_note.ps
             violin_highest = self.piece.instruments.vln.highest_note.ps
@@ -543,12 +534,16 @@ class Song(object):
                 rand_interval = random.randint(-7, 7)
                 violin_prev_dyad = [p, p + rand_interval]
 
-
                 history['vln'].append(violin_prev_dyad)
 
             violin = []
             for chord in bar.harmony:
-                pitch = next_violin_dyad(history['vln'][-1], chord['pitch'], violin_lowest, violin_highest)
+                pitch = next_violin_dyad(
+                    history['vln'][-1],
+                    chord['pitch'],
+                    violin_lowest,
+                    violin_highest
+                )
 
                 violin.append({
                     'duration': chord['duration'],
@@ -560,19 +555,26 @@ class Song(object):
             vib_lowest = int(self.piece.instruments.vib.lowest_note.ps)
             vib_highest = int(self.piece.instruments.vib.highest_note.ps)
             if not history['vib']:
-                prev_vib_chord = random_vibraphone_voicing(vib_lowest, vib_highest)
+                prev_vib_chord = random_vibraphone_voicing(
+                    vib_lowest,
+                    vib_highest
+                )
                 history['vib'].append(prev_vib_chord)
 
             vibraphone = []
             for harm in bar.harmony:
 
-                vib_pitches = next_vibraphone_chord(history['vib'][-1], harm['pitch'], vib_lowest, vib_highest)
+                vib_pitches = next_vibraphone_chord(
+                    history['vib'][-1],
+                    harm['pitch'],
+                    vib_lowest,
+                    vib_highest
+                )
 
                 vibraphone.append({
                     'duration': harm['duration'],
                     'pitch': vib_pitches,
                 })
-
 
             # Bass
             bass_lowest = self.piece.instruments.bs.lowest_note.ps
@@ -581,17 +583,20 @@ class Song(object):
                 bass_prev_pitch = random.randint(bass_lowest, bass_lowest + 18)
                 history['bs'].append(bass_prev_pitch)
 
-
             bass = []
             for chord in bar.harmony:
-                pitch = next_bass_note(history['bs'][-1], chord['pitch'], bass_lowest, bass_highest)
+                pitch = next_bass_note(
+                    history['bs'][-1],
+                    chord['pitch'],
+                    bass_lowest,
+                    bass_highest
+                )
 
                 bass.append({
                     'duration': chord['duration'],
                     'pitch': pitch,
                 })
                 history['bs'].append(pitch)
-
 
             bar.parts.extend([
                 {
@@ -617,7 +622,6 @@ class Song(object):
                     lowest = self.piece.instruments.d[acc].lowest_note.ps
                     highest = self.piece.instruments.d[acc].highest_note.ps
 
-
                     if not history[acc]:
                         quarter_of_register = (highest - lowest) / 4
                         lower_limit = int(lowest + quarter_of_register)
@@ -629,10 +633,13 @@ class Song(object):
 
                         history[acc].append(prev_dyad)
 
-
                     acc_notes = []
                     for chord in bar.harmony:
-                        pitch = next_simple_accompaniment_dyad(history[acc][-1], chord['pitch'], lowest, highest)
+                        pitch = next_simple_accompaniment_dyad(
+                            history[acc][-1],
+                            chord['pitch'],
+                            lowest, highest
+                        )
 
                         acc_notes.append({
                             'duration': chord['duration'],
@@ -742,7 +749,6 @@ class Song(object):
 
         return transposition
 
-
     def choose_root(self):
         return random.randint(0, 11)
 
@@ -802,12 +808,16 @@ class Song(object):
                 'duration': r
             })
 
-        self.choose_melody_pitches(notes, bar_type.register, harmonies, start_with_rest)
+        self.choose_melody_pitches(
+            notes,
+            bar_type.register,
+            harmonies,
+            start_with_rest
+        )
 
         notes = self.add_ornaments(notes)
 
         return notes
-
 
     def get_pitch_options(self, note_harmonies, prev):
         pitch_options = [prev - 2, prev - 1, prev + 1, prev + 2]
@@ -894,7 +904,6 @@ class Song(object):
             pitch_history.append(note['pitch'])
 
             first = False
-
 
     def add_scalar_ornament(self, note, prev, harmonies):
         interval = prev['pitch'] - note['pitch']
@@ -999,14 +1008,12 @@ class Song(object):
         if not orn_type or rand >= .9:
             orn_type = self.add_chromatic_interval(note, prev)
 
-
         note['ornaments'] = []
         for n in orn_type:
             note['ornaments'].append({
                 'pitch': n,
                 'duration': 0
             })
-
 
     def add_ornaments(self, notes):
         new_notes = []
