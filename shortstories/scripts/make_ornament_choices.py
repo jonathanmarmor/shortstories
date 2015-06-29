@@ -82,12 +82,10 @@ def make_orn_types():
 
 def main():
     orn_types = make_orn_types()
-    string = write(orn_types)
-    print string
+    print orn_types
+    # string = write(orn_types)
+    # print string
 
 
 if __name__ == '__main__':
     main()
-
-
-

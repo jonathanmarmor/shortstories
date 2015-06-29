@@ -275,7 +275,11 @@ class Piece(object):
                 for part in bar.parts:
                     measure = Measure()
                     if bar.tempo:
-                        measure.insert(0, MetronomeMark(number=bar.tempo, referent=Duration(1)))
+                        mark = MetronomeMark(
+                            number=bar.tempo,
+                            referent=Duration(1)
+                        )
+                        measure.insert(0, mark)
                         measure.leftBarline = 'double'
                     if bar.duration != previous_duration:
                         ts = TimeSignature('{}/4'.format(bar.duration))

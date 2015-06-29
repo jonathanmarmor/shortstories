@@ -91,5 +91,6 @@ rhythm_options[8] = S(
     (1, rhythm_options['1_open'].choose() + rhythm_options[2].choose() + rhythm_options[4].choose() + rhythm_options['1_close'].choose()),
 )
 
+
 def get_melody_rhythm(n):
     return rhythm_options[n].choose()

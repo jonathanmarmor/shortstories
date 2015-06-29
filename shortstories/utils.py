@@ -18,7 +18,7 @@ class S(object):
 
 
 def scale(x, minimum, maximum, floor=0, ceiling=1):
-    return ((ceiling - floor) * (float(x) - minimum))/(maximum - minimum) + floor
+    return ((ceiling - floor) * (float(x) - minimum)) / (maximum - minimum) + floor
 
 
 def scale_list(l, floor=0, ceiling=1):

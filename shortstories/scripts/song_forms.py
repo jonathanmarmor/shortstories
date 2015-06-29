@@ -3,6 +3,8 @@
 import itertools
 import random
 
+from utils import scale
+
 
 def weighted_choice(options, weights):
     rand = random.random()
@@ -90,4 +92,3 @@ def choose():
     except:
         print 'warning!  song_forms.choose failed and retried.'
         return choose()
-

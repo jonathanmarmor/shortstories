@@ -40,8 +40,10 @@ def next_vibraphone_chord(previous, harmony, lowest, highest):
 
     size_change = random.choice([-1, 0, +1])
     n = len(options) + size_change
-    if n > 8: n = 8
-    if n < 5: n = 5
+    if n > 8:
+        n = 8
+    if n < 5:
+        n = 5
 
     new = set()
     for p in previous:

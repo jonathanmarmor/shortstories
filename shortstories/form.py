@@ -1,4 +1,3 @@
-import os
 import random
 from collections import Counter
 
@@ -94,7 +93,7 @@ class Form(object):
             self.bar_types[bar.type].count += 1
             bar.type_obj = self.bar_types[bar.type]
 
-        self.duration = sum([b.duration for b in self.bars])
+        self.duration = sum([bb.duration for bb in self.bars])
 
     def __repr__(self):
         return self.form_string

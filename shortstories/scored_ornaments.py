@@ -2152,5 +2152,6 @@ orn_types = {
     },
 }
 
+
 def choose(n, direction):
     return orn_types[n][direction].choose()
