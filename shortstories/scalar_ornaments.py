@@ -3,16 +3,7 @@ import random
 import itertools
 from collections import defaultdict
 
-
-def pairwise(iterable):
-    """
-    >>> list(pairwise(range(5)))
-    [(0, 1), (1, 2), (2, 3), (3, 4)]
-
-    """
-    a, b = itertools.tee(iterable)
-    next(b, None)
-    return itertools.izip(a, b)
+from utils import pairwise
 
 
 def is_good(ornament):

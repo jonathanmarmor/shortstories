@@ -25,9 +25,8 @@ from music21.layout import StaffGroup
 from music21.tempo import MetronomeMark
 from music21.duration import Duration
 
-from utils import (weighted_choice, count_intervals, frange, fill, divide,
-    split_at_beats, join_quarters, scale, S, get_simul, set_start_end, get_at,
-    get_by_attr)
+from utils import (weighted_choice, frange,
+    split_at_beats, join_quarters, scale, S, set_start_end, get_at)
 import harmonic_rhythm
 import form
 from chord_types import (get_chord_type, diatonic_scales_for_harmony,
@@ -747,23 +746,23 @@ class Song(object):
     def choose_root(self):
         return random.randint(0, 11)
 
-        root_motion = weighted_choice([
-            7,
-            5,
-            2,
-            10,
-            3,
-            8,
-            4,
-            9,
-            1,
-            11,
-            0,
-            6
-        ], range(24, 12, -1))
-        root = (self.prev_root + root_motion) % 12
-        self.prev_root = root
-        return root
+        # root_motion = weighted_choice([
+        #     7,
+        #     5,
+        #     2,
+        #     10,
+        #     3,
+        #     8,
+        #     4,
+        #     9,
+        #     1,
+        #     11,
+        #     0,
+        #     6
+        # ], range(24, 12, -1))
+        # root = (self.prev_root + root_motion) % 12
+        # self.prev_root = root
+        # return root
 
     def choose_harmony(self):
         root = self.choose_root()

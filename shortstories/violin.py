@@ -2,26 +2,7 @@ import random
 import itertools
 from collections import defaultdict
 
-from utils import weighted_choice, exp_weights
-
-
-def get_intervals(harmony):
-    """
-    >>> get_intervals([2, 6, 9])
-    {
-        3: [(6, 9)],
-        4: [(2, 6)],
-        5: [(9, 2)]
-    }
-
-    """
-    intervals = defaultdict(list)
-    for interval in range(1, 7):
-        for bottom in harmony:
-            top = (bottom + interval) % 12
-            if top in harmony:
-                intervals[interval].append((bottom, top))
-    return dict(intervals)
+from utils import weighted_choice, exp_weights, get_intervals
 
 
 def ranked_roots(harmony):
