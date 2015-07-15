@@ -486,34 +486,34 @@ class Song(object):
 
         return transposition
 
-    def choose_root(self):
-        return random.randint(0, 11)
+    # def choose_root(self):
+    #     return random.randint(0, 11)
 
-        # root_motion = weighted_choice([
-        #     7,
-        #     5,
-        #     2,
-        #     10,
-        #     3,
-        #     8,
-        #     4,
-        #     9,
-        #     1,
-        #     11,
-        #     0,
-        #     6
-        # ], range(24, 12, -1))
-        # root = (self.prev_root + root_motion) % 12
-        # self.prev_root = root
-        # return root
+    #     # root_motion = weighted_choice([
+    #     #     7,
+    #     #     5,
+    #     #     2,
+    #     #     10,
+    #     #     3,
+    #     #     8,
+    #     #     4,
+    #     #     9,
+    #     #     1,
+    #     #     11,
+    #     #     0,
+    #     #     6
+    #     # ], range(24, 12, -1))
+    #     # root = (self.prev_root + root_motion) % 12
+    #     # self.prev_root = root
+    #     # return root
 
-    def choose_harmony(self):
-        root = self.choose_root()
-        chord_type = get_chord_type()
-        return self.build_chord(root, chord_type)
+    # def choose_harmony(self):
+    #     root = self.choose_root()
+    #     chord_type = get_chord_type()
+    #     return self.build_chord(root, chord_type)
 
-    def build_chord(self, root, chord_type):
-        return [(p + root) % 12 for p in chord_type]
+    # def build_chord(self, root, chord_type):
+    #     return [(p + root) % 12 for p in chord_type]
 
     # def choose_violin_register(self):
     #     lowest = random.randint(0, 18)
