@@ -23,10 +23,10 @@ class Instruments(object):
         self.names = [
             'ob',
         ]
-        self.ob = ob = Oboe()
+        self.ob = Oboe()
 
         self.l = [
-            ob,
+            self.ob,
         ]
         self.d = {}
         for name, inst in zip(self.names, self.l):
@@ -70,6 +70,11 @@ class Parts(object):
             part.id = name
             self.d[name] = part
             part.insert(0, inst)
+
+
+        # part = Part()
+        # part.id = 'ob'
+        # part.insert(0, instrument)
 
 
 class Piece(object):

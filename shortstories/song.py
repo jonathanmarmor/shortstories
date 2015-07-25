@@ -79,10 +79,6 @@ class Song(object):
 
         self.melody_register = self.instruments.soloists_shared_register()
 
-        history = {}
-        for name in self.instruments.names:
-            history[name] = []
-
         self.form = form.choose()
 
         print self.form.form_string
@@ -153,15 +149,11 @@ class Song(object):
 
                 chord_type = get_chord_type()
 
-                # print 'CHORD TYPE:', chord_type
-
                 harmony = animal_play_harmony.choose_next_harmony(
                     self.harmony_history,
                     chord_type
                 )
                 self.harmony_history.append(harmony)
-
-                # print 'HARMONY:', harmony
 
                 h = {
                     'duration': harm_dur,
@@ -320,7 +312,6 @@ class Song(object):
         return pitch_options
 
     def choose_melody_pitches(self, notes, register, harmonies, start_with_rest):
-        # print 'Choosing pitches'
         for h in harmonies:
             h['pitch_classes'] = [p % 12 for p in h['pitch']]
 
@@ -333,10 +324,7 @@ class Song(object):
 
         previous_note = {'duration': 1.0, 'pitch': prev}
 
-        pitch_history = []
-
         first = True
-        # print '-'*10
         for note in notes:
             if first and start_with_rest:
                 note['pitch'] = 'rest'
@@ -383,11 +371,8 @@ class Song(object):
 
             self.add_ornament(note, previous_note, note_harmonies, first)
 
-            # print note
-
             prev = note['pitch']
             previous_note = note
-            pitch_history.append(note['pitch'])
 
             first = False
 
