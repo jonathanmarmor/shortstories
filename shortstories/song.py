@@ -60,7 +60,7 @@ def ornament_bridge(a, b, n=None, prev_duration=0.75, width=2):
 
 
 class Song(object):
-    def __init__(self, piece, movement):
+    def __init__(self, piece):
         """
         self.duration = total song duration
         self.bars =
@@ -73,7 +73,6 @@ class Song(object):
 
         """
         self.piece = piece
-        self.movement = movement
         self.prev_root = random.randint(0, 11)
 
         self.instruments = self.piece.instruments

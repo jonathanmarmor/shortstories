@@ -60,10 +60,10 @@ class Parts(object):
             'ob',
         ]
 
-        self.ob = ob = Part()
+        self.ob = Part()
 
         self.l = [
-            ob,
+            self.ob,
         ]
         self.d = {}
         for name, part, inst in zip(self.names, self.l, instruments.l):
@@ -74,9 +74,9 @@ class Parts(object):
 
 class Piece(object):
     def __init__(self):
-        score = self.score = Score()
-        self.instruments = self.i = Instruments()
-        self.parts = Parts(self.i)
+        self.score = Score()
+        self.instruments = Instruments()
+        self.parts = Parts(self.instruments)
 
         # Make Metadata
         timestamp = datetime.datetime.utcnow()
@@ -84,16 +84,16 @@ class Piece(object):
         metadata.title = 'Short Stories'
         metadata.composer = 'Jonathan Marmor'
         metadata.date = timestamp.strftime('%Y/%m/%d')
-        score.insert(0, metadata)
+        self.score.insert(0, metadata)
 
-        [score.insert(0, part) for part in self.parts.l]
-        score.insert(0, StaffGroup(self.parts.l))
+        [self.score.insert(0, part) for part in self.parts.l]
+        self.score.insert(0, StaffGroup(self.parts.l))
 
         self.duet_options = None
 
         # Make a "song"
         self.songs = []
-        song = Song(self, 1)
+        song = Song(self)
         self.songs.append(song)
 
         self.make_notation()
