@@ -92,21 +92,18 @@ class Piece(object):
         self.duet_options = None
 
         # Make a "song"
-        self.songs = []
-        song = Song(self)
-        self.songs.append(song)
+        self.song = Song(self)
 
         self.make_notation()
 
     def make_notation(self):
         # Make notation
         previous_duration = None
-        for song in self.songs:
-            for bar in song.bars:
-                for part in bar.parts:
-                    measure = self.notate_measure(previous_duration, bar, part)
-                    self.parts.d[part['instrument_name']].append(measure)
-                previous_duration = bar.duration
+        for bar in self.song.bars:
+            for part in bar.parts:
+                measure = self.notate_measure(previous_duration, bar, part)
+                self.parts.d[part['instrument_name']].append(measure)
+            previous_duration = bar.duration
 
     def notate_measure(self, previous_duration, bar, part):
         measure = Measure()
