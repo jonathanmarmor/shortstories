@@ -2,7 +2,6 @@
 
 import sys
 import datetime
-import random
 
 from music21.note import Note, Rest
 from music21.pitch import Pitch
@@ -10,14 +9,12 @@ from music21.chord import Chord
 from music21.stream import Measure, Part, Score
 from music21.meter import TimeSignature
 from music21.metadata import Metadata
-from music21.instrument import (
-    Oboe,
-)
+from music21.instrument import Oboe
 from music21.layout import StaffGroup
 from music21.tempo import MetronomeMark
 from music21.duration import Duration
 
-from utils import frange, split_at_beats, join_quarters, scale
+from utils import frange, split_at_beats, join_quarters
 from song import Song
 
 

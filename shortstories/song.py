@@ -3,10 +3,6 @@ from collections import Counter
 
 from utils import weighted_choice, frange, set_start_end, get_at
 import form
-from bass import next_bass_note
-from violin import next_violin_dyad
-from simple_accompaniment import next_simple_accompaniment_dyad
-from vibraphone import random_vibraphone_voicing, next_vibraphone_chord
 from chord_types import (get_chord_type, diatonic_scales_for_harmony,
     other_scales_for_harmony)
 import animal_play_harmony
@@ -183,7 +179,6 @@ class Song(object):
 
         # Turn Bar Types into Bars
 
-        size = 1
         for bar in self.bars:
 
             bar.parts = []
