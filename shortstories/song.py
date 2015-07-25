@@ -95,22 +95,7 @@ class Song(object):
         self.bars = self.form.bars
         self.duration_beats = self.form.duration
 
-        if self.movement <= 5:
-            # Medium
-            tempo_options = range(56, 66, 2)
-        elif self.movement in [6, 8, 10, 12]:
-            # Fast
-            tempo_options = range(66, 78, 2)
-        elif self.movement in [7, 9, 11]:
-            # Slow
-            tempo_options = range(42, 54, 2)
-        elif self.movement in [13, 14]:
-            # Slower
-            tempo_options = range(36, 42, 2)
-        elif self.movement > 14:
-            # Grind to a halt
-            tempo_options = range(22, 34, 2)
-
+        tempo_options = range(32, 50, 2)
         self.tempo = random.choice(tempo_options)
 
         self.bars[0].tempo = self.tempo
@@ -206,51 +191,7 @@ class Song(object):
             bar.melody = bar.type_obj.melody
             bar.harmony = bar.type_obj.harmony
 
-            if not self.piece.duet_options:
-                self.piece.duet_options = [
-                    ('ob', 'sax'),
-                    ('fl', 'sax'),
-                    ('cl', 'sax'),
-                    ('ob', 'tpt'),
-                    ('sax', 'tpt'),
-                    ('cl', 'tpt'),
-                    ('fl', 'tpt'),
-                    ('fl', 'ob'),
-                    ('fl', 'cl'),
-                    ('ob', 'cl'),
-                ]
-
-            soloist_options = [
-                'ob',
-                'cl',
-                'sax',
-                'fl',
-                'tpt',
-            ]
-            soloist_weights = [
-                35,
-                26,
-                16,
-                13,
-                10,
-            ]
-            soloists = []
-
-            if size == 1:
-                soloist = weighted_choice(soloist_options, soloist_weights)
-                soloists.append(soloist)
-                soloist_options.remove(soloist)
-            elif size == 2:
-                duet = random.choice(self.piece.duet_options)
-                self.piece.duet_options.remove(duet)
-                for soloist in duet:
-                    soloists.append(soloist)
-                    soloist_options.remove(soloist)
-
-            # transposition = weighted_choice(
-            #     [-2, -1, 1, 2],
-            #     [10, 12, 8, 12]
-            # )
+            soloists = ['ob']
 
             transposition = self.add_soloists_melody(soloists, bar)
 
@@ -262,145 +203,6 @@ class Song(object):
                         'duration': note['duration']
                     })
                 bar.harmony = harmony
-
-            # Violin
-            violin_lowest = self.piece.instruments.vln.lowest_note.ps
-            violin_highest = self.piece.instruments.vln.highest_note.ps
-            if not history['vln']:
-                p = random.randint(violin_lowest + 7, violin_highest - 18)
-                rand_interval = random.randint(-7, 7)
-                violin_prev_dyad = [p, p + rand_interval]
-
-                history['vln'].append(violin_prev_dyad)
-
-            violin = []
-            for chord in bar.harmony:
-                pitch = next_violin_dyad(
-                    history['vln'][-1],
-                    chord['pitch'],
-                    violin_lowest,
-                    violin_highest
-                )
-
-                violin.append({
-                    'duration': chord['duration'],
-                    'pitch': pitch,
-                })
-                history['vln'].append(pitch)
-
-            # Vibraphone
-            vib_lowest = int(self.piece.instruments.vib.lowest_note.ps)
-            vib_highest = int(self.piece.instruments.vib.highest_note.ps)
-            if not history['vib']:
-                prev_vib_chord = random_vibraphone_voicing(
-                    vib_lowest,
-                    vib_highest
-                )
-                history['vib'].append(prev_vib_chord)
-
-            vibraphone = []
-            for harm in bar.harmony:
-
-                vib_pitches = next_vibraphone_chord(
-                    history['vib'][-1],
-                    harm['pitch'],
-                    vib_lowest,
-                    vib_highest
-                )
-
-                vibraphone.append({
-                    'duration': harm['duration'],
-                    'pitch': vib_pitches,
-                })
-
-            # Bass
-            bass_lowest = self.piece.instruments.bs.lowest_note.ps
-            bass_highest = self.piece.instruments.bs.highest_note.ps
-            if not history['bs']:
-                bass_prev_pitch = random.randint(bass_lowest, bass_lowest + 18)
-                history['bs'].append(bass_prev_pitch)
-
-            bass = []
-            for chord in bar.harmony:
-                pitch = next_bass_note(
-                    history['bs'][-1],
-                    chord['pitch'],
-                    bass_lowest,
-                    bass_highest
-                )
-
-                bass.append({
-                    'duration': chord['duration'],
-                    'pitch': pitch,
-                })
-                history['bs'].append(pitch)
-
-            bar.parts.extend([
-                {
-                    'instrument_name': 'vln',
-                    'notes': violin,
-                },
-                {
-                    'instrument_name': 'vib',
-                    'notes': vibraphone,
-                },
-                {
-                    'instrument_name': 'bs',
-                    'notes': bass,
-                },
-            ])
-
-            if size > 1:
-                num_accompanists = 2  # random.randint(2, len(soloist_options))
-                accompanists = random.sample(soloist_options, num_accompanists)
-                for acc in accompanists:
-                    soloist_options.remove(acc)
-
-                    lowest = self.piece.instruments.d[acc].lowest_note.ps
-                    highest = self.piece.instruments.d[acc].highest_note.ps
-
-                    if not history[acc]:
-                        quarter_of_register = (highest - lowest) / 4
-                        lower_limit = int(lowest + quarter_of_register)
-                        higher_limit = int(highest - quarter_of_register)
-
-                        p = random.randint(lower_limit, higher_limit)
-                        rand_interval = random.randint(-4, 4)
-                        prev_dyad = [p, p + rand_interval]
-
-                        history[acc].append(prev_dyad)
-
-                    acc_notes = []
-                    for chord in bar.harmony:
-                        pitch = next_simple_accompaniment_dyad(
-                            history[acc][-1],
-                            chord['pitch'],
-                            lowest, highest
-                        )
-
-                        acc_notes.append({
-                            'duration': chord['duration'],
-                            'pitch': pitch,
-                        })
-                        history[acc].append(pitch)
-
-                    bar.parts.append({
-                        'instrument_name': acc,
-                        'notes': acc_notes,
-                    })
-
-            # Put rests in instruments that aren't playing in this bar
-            bar_of_rests = [{
-                'pitch': 'rest',
-                'duration': bar.duration,
-            }]
-            for inst in soloist_options:
-                bar.parts.append({
-                    'instrument_name': inst,
-                    'notes': bar_of_rests,
-                })
-
-            size = 1 if size > 1 else 2
 
     def is_melody_in_instrument_register(self, melody, instrument_name):
         instrument = self.instruments.d[instrument_name]
@@ -464,20 +266,8 @@ class Song(object):
                     melody = self.transpose_melody(melody, -12)
 
             else:
-                if soloist in ['fl', 'ob'] and can_go_up and random.random() < .8:
+                if can_go_up and random.random() < .8:
                     melody = self.transpose_melody(melody, 12)
-                elif soloist == 'cl':
-                    if random.random() < .8:
-                        options = [None]
-                        if can_go_up:
-                            options.append(12)
-                        if can_go_down:
-                            options.append(-12)
-                        trans = random.choice(options)
-                        if trans:
-                            melody = self.transpose_melody(melody, trans)
-                elif soloist in ['sax', 'tpt'] and can_go_down and random.random() < .4:
-                    melody = self.transpose_melody(melody, -12)
 
             bar.parts.append({
                 'instrument_name': soloist,
@@ -485,41 +275,6 @@ class Song(object):
             })
 
         return transposition
-
-    # def choose_root(self):
-    #     return random.randint(0, 11)
-
-    #     # root_motion = weighted_choice([
-    #     #     7,
-    #     #     5,
-    #     #     2,
-    #     #     10,
-    #     #     3,
-    #     #     8,
-    #     #     4,
-    #     #     9,
-    #     #     1,
-    #     #     11,
-    #     #     0,
-    #     #     6
-    #     # ], range(24, 12, -1))
-    #     # root = (self.prev_root + root_motion) % 12
-    #     # self.prev_root = root
-    #     # return root
-
-    # def choose_harmony(self):
-    #     root = self.choose_root()
-    #     chord_type = get_chord_type()
-    #     return self.build_chord(root, chord_type)
-
-    # def build_chord(self, root, chord_type):
-    #     return [(p + root) % 12 for p in chord_type]
-
-    # def choose_violin_register(self):
-    #     lowest = random.randint(0, 18)
-    #     width = random.randint(13, 22)
-    #     highest = lowest + width
-    #     return self.vln_all_notes[lowest:highest]
 
     def choose_melody_notes(self, duration, harmonies, bar_type):
         # return a list of {pitch, duration} dicts
