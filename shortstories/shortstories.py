@@ -18,70 +18,82 @@ from utils import frange, split_at_beats, join_quarters
 from song import Song
 
 
-class Instruments(object):
-    def __init__(self):
-        self.names = [
-            'ob',
-        ]
-        self.ob = Oboe()
+# class Instruments(object):
+#     def __init__(self):
+#         self.names = [
+#             'ob',
+#         ]
+#         self.ob = Oboe()
 
-        self.l = [
-            self.ob,
-        ]
-        self.d = {}
-        for name, inst in zip(self.names, self.l):
-            inst.nickname = name
-            self.d[name] = inst
+#         self.l = [
+#             self.ob,
+#         ]
+#         self.d = {}
+#         for name, inst in zip(self.names, self.l):
+#             inst.nickname = name
+#             self.d[name] = inst
 
-        # lowest, highest notes
-        ranges = [
-            ('B-3', 'G#6'),   # Oboe      58 92
-        ]
-        for r, i in zip(ranges, self.l):
-            i.lowest_note = Pitch(r[0])
-            i.highest_note = Pitch(r[1])
-            i.all_notes = list(frange(i.lowest_note.ps, i.highest_note.ps + 1))
-            i.all_notes_24 = list(frange(i.lowest_note.ps, i.highest_note.ps + 1, 0.5))
+#         # lowest, highest notes
+#         ranges = [
+#             ('B-3', 'G#6'),   # Oboe      58 92
+#         ]
+#         for r, i in zip(ranges, self.l):
+#             i.lowest_note = Pitch(r[0])
+#             i.highest_note = Pitch(r[1])
+#             i.all_notes = list(frange(i.lowest_note.ps, i.highest_note.ps + 1))
+#             i.all_notes_24 = list(frange(i.lowest_note.ps, i.highest_note.ps + 1, 0.5))
 
-    def soloists_shared_register(self):
-        soloists = [
-            'ob',
-        ]
-        lowest_notes = [self.d[name].lowest_note.ps for name in soloists]
-        lowest = int(max(lowest_notes))
-        highest_notes = [self.d[name].highest_note.ps for name in soloists]
-        highest = int(min(highest_notes))
-        return range(lowest, highest + 1)
-
-
-class Parts(object):
-    def __init__(self, instruments):
-        self.names = [
-            'ob',
-        ]
-
-        self.ob = Part()
-
-        self.l = [
-            self.ob,
-        ]
-        self.d = {}
-        for name, part, inst in zip(self.names, self.l, instruments.l):
-            part.id = name
-            self.d[name] = part
-            part.insert(0, inst)
+#     def soloists_shared_register(self):
+#         soloists = [
+#             'ob',
+#         ]
+#         lowest_notes = [self.d[name].lowest_note.ps for name in soloists]
+#         lowest = int(max(lowest_notes))
+#         highest_notes = [self.d[name].highest_note.ps for name in soloists]
+#         highest = int(min(highest_notes))
+#         return range(lowest, highest + 1)
 
 
-        # part = Part()
-        # part.id = 'ob'
-        # part.insert(0, instrument)
+# class Parts(object):
+#     def __init__(self, instruments):
+#         self.names = [
+#             'ob',
+#         ]
+
+#         self.ob = Part()
+
+#         self.l = [
+#             self.ob,
+#         ]
+#         self.d = {}
+#         for name, part, inst in zip(self.names, self.l, instruments.l):
+#             part.id = name
+#             self.d[name] = part
+#             part.insert(0, inst)
 
 
 class Piece(object):
     def __init__(self):
         self.score = Score()
-        self.instruments = Instruments()
-        self.parts = Parts(self.instruments)
+
+        # self.instruments = Instruments()
+        # self.parts = Parts(self.instruments)
+
+        self.instrument = Oboe()
+        self.instrument.nickname = 'ob'
+        oboe_range = ('B-3', 'G#6')   # Oboe      58 92
+        self.instrument.lowest_note = Pitch(oboe_range[0])
+        self.instrument.highest_note = Pitch(oboe_range[1])
+        self.instrument.all_notes = list(
+            frange(
+                self.instrument.lowest_note.ps,
+                self.instrument.highest_note.ps + 1
+            )
+        )
+
+        self.part = Part()
+        self.part.id = 'ob'
+        self.part.insert(0, self.instrument)
 
         # Make Metadata
         timestamp = datetime.datetime.utcnow()
@@ -91,13 +103,11 @@ class Piece(object):
         metadata.date = timestamp.strftime('%Y/%m/%d')
         self.score.insert(0, metadata)
 
-        [self.score.insert(0, part) for part in self.parts.l]
-        self.score.insert(0, StaffGroup(self.parts.l))
-
-        self.duet_options = None
+        self.score.insert(0, self.part)
+        # self.score.insert(0, StaffGroup(self.parts.l))
 
         # Make a "song"
-        self.song = Song(self)
+        self.song = Song(self.instrument)
 
         self.make_notation()
 
@@ -107,7 +117,8 @@ class Piece(object):
         for bar in self.song.bars:
             for part in bar.parts:
                 measure = self.notate_measure(previous_duration, bar, part)
-                self.parts.d[part['instrument_name']].append(measure)
+                self.part.append(measure)
+                # self.parts.d[part['instrument_name']].append(measure)
             previous_duration = bar.duration
 
     def notate_measure(self, previous_duration, bar, part):

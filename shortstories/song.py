@@ -60,7 +60,7 @@ def ornament_bridge(a, b, n=None, prev_duration=0.75, width=2):
 
 
 class Song(object):
-    def __init__(self, piece):
+    def __init__(self, instrument):
         """
         self.duration = total song duration
         self.bars =
@@ -72,12 +72,11 @@ class Song(object):
 
 
         """
-        self.piece = piece
         self.prev_root = random.randint(0, 11)
 
-        self.instruments = self.piece.instruments
+        self.instrument = instrument
 
-        self.melody_register = self.instruments.soloists_shared_register()
+        self.melody_register = self.instrument.all_notes
 
         self.form = form.choose()
 
@@ -177,9 +176,7 @@ class Song(object):
             bar.melody = bar.type_obj.melody
             bar.harmony = bar.type_obj.harmony
 
-            soloists = ['ob']
-
-            transposition = self.add_soloists_melody(soloists, bar)
+            transposition = self.add_soloists_melody(self.instrument, bar)
 
             if transposition != 0:
                 harmony = []
@@ -190,8 +187,7 @@ class Song(object):
                     })
                 bar.harmony = harmony
 
-    def is_melody_in_instrument_register(self, melody, instrument_name):
-        instrument = self.instruments.d[instrument_name]
+    def is_melody_in_instrument_register(self, melody, instrument):
         register = instrument.all_notes
 
         return self.is_melody_in_register(melody, register)
@@ -205,8 +201,7 @@ class Song(object):
                     return False
         return True
 
-    def can_transpose(self, transposition, melody, instrument_name):
-        instrument = self.instruments.d[instrument_name]
+    def can_transpose(self, transposition, melody, instrument):
         register = instrument.all_notes
 
         for note in melody:
@@ -236,29 +231,28 @@ class Song(object):
             new_melody.append(new_note)
         return new_melody
 
-    def add_soloists_melody(self, soloists, bar):
+    def add_soloists_melody(self, soloist, bar):
         transposition = bar.transposition
 
         melody = self.transpose_melody(bar.melody, transposition)
 
-        for soloist in soloists:
-            can_go_up = self.can_transpose(12, melody, soloist)
-            can_go_down = self.can_transpose(-12, melody, soloist)
+        can_go_up = self.can_transpose(12, melody, soloist)
+        can_go_down = self.can_transpose(-12, melody, soloist)
 
-            if not self.is_melody_in_instrument_register(melody, soloist):
-                if can_go_up:
-                    melody = self.transpose_melody(melody, 12)
-                if can_go_down:
-                    melody = self.transpose_melody(melody, -12)
+        if not self.is_melody_in_instrument_register(melody, soloist):
+            if can_go_up:
+                melody = self.transpose_melody(melody, 12)
+            if can_go_down:
+                melody = self.transpose_melody(melody, -12)
 
-            else:
-                if can_go_up and random.random() < .8:
-                    melody = self.transpose_melody(melody, 12)
+        else:
+            if can_go_up and random.random() < .8:
+                melody = self.transpose_melody(melody, 12)
 
-            bar.parts.append({
-                'instrument_name': soloist,
-                'notes': melody,
-            })
+        bar.parts.append({
+            'instrument_name': soloist.nickname,
+            'notes': melody,
+        })
 
         return transposition
 
