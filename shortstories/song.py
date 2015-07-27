@@ -72,16 +72,12 @@ class Song(object):
 
 
         """
+
         self.prev_root = random.randint(0, 11)
-
         self.instrument = instrument
-
         self.melody_register = self.instrument.all_notes
-
         self.form = form.choose()
-
         print self.form.form_string
-
         self.bars = self.form.bars
         self.duration_beats = self.form.duration
 

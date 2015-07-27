@@ -10,7 +10,6 @@ from music21.stream import Measure, Part, Score
 from music21.meter import TimeSignature
 from music21.metadata import Metadata
 from music21.instrument import Oboe
-from music21.layout import StaffGroup
 from music21.tempo import MetronomeMark
 from music21.duration import Duration
 
@@ -18,66 +17,9 @@ from utils import frange, split_at_beats, join_quarters
 from song import Song
 
 
-# class Instruments(object):
-#     def __init__(self):
-#         self.names = [
-#             'ob',
-#         ]
-#         self.ob = Oboe()
-
-#         self.l = [
-#             self.ob,
-#         ]
-#         self.d = {}
-#         for name, inst in zip(self.names, self.l):
-#             inst.nickname = name
-#             self.d[name] = inst
-
-#         # lowest, highest notes
-#         ranges = [
-#             ('B-3', 'G#6'),   # Oboe      58 92
-#         ]
-#         for r, i in zip(ranges, self.l):
-#             i.lowest_note = Pitch(r[0])
-#             i.highest_note = Pitch(r[1])
-#             i.all_notes = list(frange(i.lowest_note.ps, i.highest_note.ps + 1))
-#             i.all_notes_24 = list(frange(i.lowest_note.ps, i.highest_note.ps + 1, 0.5))
-
-#     def soloists_shared_register(self):
-#         soloists = [
-#             'ob',
-#         ]
-#         lowest_notes = [self.d[name].lowest_note.ps for name in soloists]
-#         lowest = int(max(lowest_notes))
-#         highest_notes = [self.d[name].highest_note.ps for name in soloists]
-#         highest = int(min(highest_notes))
-#         return range(lowest, highest + 1)
-
-
-# class Parts(object):
-#     def __init__(self, instruments):
-#         self.names = [
-#             'ob',
-#         ]
-
-#         self.ob = Part()
-
-#         self.l = [
-#             self.ob,
-#         ]
-#         self.d = {}
-#         for name, part, inst in zip(self.names, self.l, instruments.l):
-#             part.id = name
-#             self.d[name] = part
-#             part.insert(0, inst)
-
-
 class Piece(object):
     def __init__(self):
         self.score = Score()
-
-        # self.instruments = Instruments()
-        # self.parts = Parts(self.instruments)
 
         self.instrument = Oboe()
         self.instrument.nickname = 'ob'
