@@ -21,12 +21,6 @@ def scale(x, minimum, maximum, floor=0, ceiling=1):
     return ((ceiling - floor) * (float(x) - minimum)) / (maximum - minimum) + floor
 
 
-def scale_list(l, floor=0, ceiling=1):
-    minimum = 0
-    maximum = sum(l)
-    return [scale(x, minimum, maximum, floor, ceiling) for x in l]
-
-
 def weighted_choice(options, weights):
     rand = random.random()
     rand = scale(rand, 0, 1, 0, sum(weights))
@@ -112,12 +106,6 @@ def get_at(offset, notes):
             return note
 
 
-def exp_weights(n, exponent=2, reverse=True):
-    weights = [(x + 1) ** exponent for x in range(n)]
-    weights.reverse()
-    return weights
-
-
 def pairwise(iterable):
     """
     >>> list(pairwise(range(5)))
@@ -127,25 +115,6 @@ def pairwise(iterable):
     a, b = itertools.tee(iterable)
     next(b, None)
     return itertools.izip(a, b)
-
-
-def get_intervals(harmony):
-    """
-    >>> get_intervals([2, 6, 9])
-    {
-        3: [(6, 9)],
-        4: [(2, 6)],
-        5: [(9, 2)]
-    }
-
-    """
-    intervals = defaultdict(list)
-    for interval in range(1, 7):
-        for bottom in harmony:
-            top = (bottom + interval) % 12
-            if top in harmony:
-                intervals[interval].append((bottom, top))
-    return dict(intervals)
 
 
 def build_chord_type_on_root(root, chord_type):
