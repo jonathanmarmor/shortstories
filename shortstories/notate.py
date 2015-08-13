@@ -48,8 +48,8 @@ def notate(song):
     parts = []
     for instrument in song.instruments:
         part = Part()
-        instrument = INSTRUMENTS[instrument['name']]
-        part.insert(0, instrument())
+        instrument_class = INSTRUMENTS[instrument['name']]
+        part.insert(0, instrument_class())
         parts.append(part)
         score.insert(0, part)
 
@@ -63,16 +63,18 @@ def notate(song):
 def make_notation(bars, parts):
     # Make notation
     previous_duration = None
+    previous_tempo = None
     for bar in bars:
         for i, bar_part in enumerate(bar.parts):
-            measure = notate_measure(previous_duration, bar, bar_part)
+            measure = notate_measure(previous_duration, previous_tempo, bar, bar_part)
             parts[i].append(measure)
         previous_duration = bar.duration
+        previous_tempo = bar.tempo
 
 
-def notate_measure(previous_duration, bar, part):
+def notate_measure(previous_duration, previous_tempo, bar, part):
     measure = Measure()
-    if bar.tempo:
+    if bar.tempo and bar.tempo != previous_tempo:
         mark = MetronomeMark(
             number=bar.tempo,
             referent=Duration(1)
