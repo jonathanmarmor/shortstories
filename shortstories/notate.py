@@ -35,11 +35,11 @@ INSTRUMENTS = {
 }
 
 
-def notate(song, title, composer):
+def notate(song):
     timestamp = datetime.datetime.utcnow()
     metadata = Metadata()
-    metadata.title = title
-    metadata.composer = composer
+    metadata.title = song.title
+    metadata.composer = song.composer
     metadata.date = timestamp.strftime('%Y/%m/%d')
 
     score = Score()

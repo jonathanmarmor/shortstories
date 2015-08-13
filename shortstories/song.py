@@ -92,6 +92,9 @@ def ornament_bridge(a, b, n=None, prev_duration=0.75, width=2):
 
 
 class Song(object):
+    title = 'Short Stories'
+    composer = 'Jonathan Marmor'
+
     def __init__(self):
         """
         self.duration = total song duration
@@ -523,4 +526,4 @@ class Song(object):
 
 if __name__ == '__main__':
     song = Song()
-    notate(song, 'Short Stories', 'Jonathan Marmor')
+    notate(song)
