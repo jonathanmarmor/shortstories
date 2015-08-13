@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import random
 from collections import Counter
 
@@ -10,6 +12,7 @@ import harmonic_rhythm
 from melody_rhythm import get_melody_rhythm
 import scalar_ornaments
 import scored_ornaments
+from notate import get_oboe, notate
 
 
 def choose(options, chosen):
@@ -484,3 +487,9 @@ class Song(object):
                     new_notes.append(orn)
             new_notes.append(note)
         return new_notes
+
+
+if __name__ == '__main__':
+    oboe = get_oboe()
+    song = Song(oboe)
+    notate(song, 'Short Stories', 'Jonathan Marmor')

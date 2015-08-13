@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import datetime
 
 from music21.note import Note, Rest
@@ -13,13 +11,10 @@ from music21.tempo import MetronomeMark
 from music21.duration import Duration
 
 from utils import frange, split_at_beats, join_quarters
-from song import Song
 
 
-def main(title='Short Stories', composer='Jonathan Marmor'):
-    oboe = make_instrument(Oboe, 'ob', 'B-3', 'G#6')
-    song = Song(oboe)
-    notate(song, title, composer)
+def get_oboe():
+    return make_instrument(Oboe, 'ob', 'B-3', 'G#6')
 
 
 def make_instrument(klass, nickname, lowest_note, highest_note):
@@ -44,7 +39,7 @@ def notate(song, title, composer):
     metadata.date = timestamp.strftime('%Y/%m/%d')
 
     part = Part()
-    part.id = song.instrument.nickname
+    # part.id = song.instrument.nickname
     part.insert(0, song.instrument)
 
     score = Score()
@@ -126,7 +121,3 @@ def notate_note(note):
         d.fill(note['durations'])
     n.duration = d
     return n
-
-
-if __name__ == '__main__':
-    main()
