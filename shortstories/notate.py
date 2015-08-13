@@ -9,6 +9,7 @@ from music21.metadata import Metadata
 from music21.instrument import Oboe
 from music21.tempo import MetronomeMark
 from music21.duration import Duration
+from music21.layout import StaffGroup
 
 from utils import frange, split_at_beats, join_quarters
 
@@ -38,28 +39,30 @@ def notate(song, title, composer):
     metadata.composer = composer
     metadata.date = timestamp.strftime('%Y/%m/%d')
 
-    part = Part()
-    # part.id = song.instrument.nickname
-    part.insert(0, song.instrument)
-
     score = Score()
     score.insert(0, metadata)
-    score.insert(0, part)
-    # self.score.insert(0, StaffGroup(self.parts.l))
 
-    make_notation(song.bars, part)
+    parts = []
+    for instrument in song.instruments:
+        part = Part()
+        part.insert(0, instrument)
+        parts.append(part)
+        score.insert(0, part)
+
+    score.insert(0, StaffGroup(parts))
+
+    make_notation(song.bars, parts)
 
     score.show('musicxml', '/Applications/Sibelius 7.5.app')
 
 
-def make_notation(bars, part):
+def make_notation(bars, parts):
     # Make notation
     previous_duration = None
     for bar in bars:
-        for bar_part in bar.parts:
+        for i, bar_part in enumerate(bar.parts):
             measure = notate_measure(previous_duration, bar, bar_part)
-            part.append(measure)
-            # self.parts.d[part['instrument_name']].append(measure)
+            parts[i].append(measure)
         previous_duration = bar.duration
 
 

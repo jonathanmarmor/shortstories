@@ -63,7 +63,7 @@ def ornament_bridge(a, b, n=None, prev_duration=0.75, width=2):
 
 
 class Song(object):
-    def __init__(self, instrument):
+    def __init__(self, instruments):
         """
         self.duration = total song duration
         self.bars =
@@ -77,8 +77,8 @@ class Song(object):
         """
 
         self.prev_root = random.randint(0, 11)
-        self.instrument = instrument
-        self.melody_register = self.instrument.all_notes
+        self.instruments = instruments
+        self.melody_register = self.instruments[0].all_notes
         self.form = form.choose()
         print self.form.form_string
         self.bars = self.form.bars
@@ -175,7 +175,7 @@ class Song(object):
             bar.melody = bar.type_obj.melody
             bar.harmony = bar.type_obj.harmony
 
-            transposition = self.add_soloists_melody(self.instrument, bar)
+            transposition = self.add_soloists_melody(self.instruments[0], bar)
 
             if transposition != 0:
                 harmony = []
@@ -490,6 +490,5 @@ class Song(object):
 
 
 if __name__ == '__main__':
-    oboe = get_oboe()
-    song = Song(oboe)
+    song = Song([get_oboe(), get_oboe()])
     notate(song, 'Short Stories', 'Jonathan Marmor')
