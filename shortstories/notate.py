@@ -6,30 +6,33 @@ from music21.chord import Chord
 from music21.stream import Measure, Part, Score
 from music21.meter import TimeSignature
 from music21.metadata import Metadata
-from music21.instrument import Oboe
 from music21.tempo import MetronomeMark
 from music21.duration import Duration
 from music21.layout import StaffGroup
+from music21.instrument import (
+    Flute,
+    Oboe,
+    Clarinet,
+    AltoSaxophone,
+    Trumpet,
+    Violin,
+    Vibraphone,
+    Contrabass
+)
 
-from utils import frange, split_at_beats, join_quarters
+from utils import split_at_beats, join_quarters
 
 
-def get_oboe():
-    return make_instrument(Oboe, 'ob', 'B-3', 'G#6')
-
-
-def make_instrument(klass, nickname, lowest_note, highest_note):
-    instrument = klass()
-    instrument.nickname = nickname
-    instrument.lowest_note = Pitch(lowest_note)
-    instrument.highest_note = Pitch(highest_note)
-    instrument.all_notes = list(
-        frange(
-            instrument.lowest_note.ps,
-            instrument.highest_note.ps + 1
-        )
-    )
-    return instrument
+INSTRUMENTS = {
+    'flute': Flute,
+    'oboe': Oboe,
+    'clarinet': Clarinet,
+    'alto saxophone': AltoSaxophone,
+    'trumpet': Trumpet,
+    'violin': Violin,
+    'vibraphone': Vibraphone,
+    'contrabass': Contrabass
+}
 
 
 def notate(song, title, composer):
@@ -45,7 +48,8 @@ def notate(song, title, composer):
     parts = []
     for instrument in song.instruments:
         part = Part()
-        part.insert(0, instrument)
+        instrument = INSTRUMENTS[instrument['name']]
+        part.insert(0, instrument())
         parts.append(part)
         score.insert(0, part)
 

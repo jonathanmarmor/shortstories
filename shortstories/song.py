@@ -12,7 +12,36 @@ import harmonic_rhythm
 from melody_rhythm import get_melody_rhythm
 import scalar_ornaments
 import scored_ornaments
-from notate import get_oboe, notate
+from notate import notate
+
+
+INSTRUMENTS = {
+    'flute': {
+        'name': 'flute',
+        'nickname': 'fl',
+        'all_notes': range(60, 96 + 1),
+    },
+    'oboe': {
+        'name': 'oboe',
+        'nickname': 'ob',
+        'all_notes': range(58, 92 + 1),
+    },
+    'clarinet': {
+        'name': 'clarinet',
+        'nickname': 'cl',
+        'all_notes': range(50, 91 + 1),
+    },
+    'alto saxophone': {
+        'name': 'alto saxophone',
+        'nickname': 'as',
+        'all_notes': range(49, 80 + 1),
+    },
+    'trumpet': {
+        'name': 'trumpet',
+        'nickname': 'tpt',
+        'all_notes': range(52, 82 + 1),
+    },
+}
 
 
 def choose(options, chosen):
@@ -63,7 +92,7 @@ def ornament_bridge(a, b, n=None, prev_duration=0.75, width=2):
 
 
 class Song(object):
-    def __init__(self, instruments):
+    def __init__(self):
         """
         self.duration = total song duration
         self.bars =
@@ -77,8 +106,11 @@ class Song(object):
         """
 
         self.prev_root = random.randint(0, 11)
-        self.instruments = instruments
-        self.melody_register = self.instruments[0].all_notes
+        self.instruments = [
+            INSTRUMENTS['oboe'],
+            INSTRUMENTS['flute']
+        ]
+        self.melody_register = self.instruments[0]['all_notes']
         self.form = form.choose()
         print self.form.form_string
         self.bars = self.form.bars
@@ -187,7 +219,7 @@ class Song(object):
                 bar.harmony = harmony
 
     def is_melody_in_instrument_register(self, melody, instrument):
-        register = instrument.all_notes
+        register = instrument['all_notes']
 
         return self.is_melody_in_register(melody, register)
 
@@ -201,7 +233,7 @@ class Song(object):
         return True
 
     def can_transpose(self, transposition, melody, instrument):
-        register = instrument.all_notes
+        register = instrument['all_notes']
 
         for note in melody:
             if note['pitch'] != 'rest' and note['pitch'] + transposition not in register:
@@ -249,7 +281,7 @@ class Song(object):
                 melody = self.transpose_melody(melody, 12)
 
         bar.parts.append({
-            'instrument_name': soloist.nickname,
+            'instrument_name': soloist['nickname'],
             'notes': melody,
         })
 
@@ -490,5 +522,5 @@ class Song(object):
 
 
 if __name__ == '__main__':
-    song = Song([get_oboe(), get_oboe()])
+    song = Song()
     notate(song, 'Short Stories', 'Jonathan Marmor')
