@@ -16,6 +16,8 @@ song.bars
 
 """
 
+import random
+
 from notate import notate
 
 
@@ -39,16 +41,6 @@ class Bar(object):
         self.duration = 4  # Hard coded to 4/4
         self.parts = []
 
-"""
-song.bars
-    bar.tempo
-    bar.duration
-    bar.parts
-        part['notes']
-            note['duration']
-            note['pitch']
-"""
-
 
 class Song(object):
     title = 'Test Song'
@@ -70,7 +62,7 @@ class Song(object):
                     'notes': [
                         {
                             'duration': 4,
-                            'pitch': 60
+                            'pitch': random.choice(instrument['all_notes'])
                         }
                     ]
                 }
