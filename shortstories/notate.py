@@ -9,30 +9,9 @@ from music21.metadata import Metadata
 from music21.tempo import MetronomeMark
 from music21.duration import Duration
 from music21.layout import StaffGroup
-from music21.instrument import (
-    Flute,
-    Oboe,
-    Clarinet,
-    AltoSaxophone,
-    Trumpet,
-    Violin,
-    Vibraphone,
-    Contrabass
-)
+from music21.instrument import fromString as get_instrument
 
 from utils import split_at_beats, join_quarters
-
-
-INSTRUMENTS = {
-    'flute': Flute,
-    'oboe': Oboe,
-    'clarinet': Clarinet,
-    'alto saxophone': AltoSaxophone,
-    'trumpet': Trumpet,
-    'violin': Violin,
-    'vibraphone': Vibraphone,
-    'contrabass': Contrabass
-}
 
 
 def notate(song):
@@ -48,8 +27,8 @@ def notate(song):
     parts = []
     for instrument in song.instruments:
         part = Part()
-        instrument_class = INSTRUMENTS[instrument['name']]
-        part.insert(0, instrument_class())
+        m21_instrument = get_instrument(instrument['name'])
+        part.insert(0, m21_instrument)
         parts.append(part)
         score.insert(0, part)
 
