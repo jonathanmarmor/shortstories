@@ -6,11 +6,21 @@ class Graph(object):
     >>> g.instruments
     ['oboe', 'flute', 'guitar']
     >>> g.add_bars('all', [1, 2, 3, 4])
+    >>> g.get_parts()
+    {'oboe': [1, 2, 3, 4], 'flute': [1, 2, 3, 4], 'guitar': [1, 2, 3, 4]}
+    >>> g.get_bars()
+    [{'oboe': [1], 'flute': [1], 'guitar': [1]},
+     {'oboe': [2], 'flute': [2], 'guitar': [2]},
+     {'oboe': [3], 'flute': [3], 'guitar': [3]},
+     {'oboe': [4], 'flute': [4], 'guitar': [4]}]
+    >>> g.get_parts('oboe', 1, 3)
+    {'oboe': [2, 3]}
     >>> g.get_bars('oboe', 1, 3)
-    [2, 3]
-    >>> g.get_bars(['oboe', 'guitar'], 2)
-    {'oboe': [3], 'guitar': [3]}
-
+    [{'oboe': [2]}, {'oboe': [3]}]
+    >>> g.get_parts(['oboe', 'guitar'], 1, 3)
+    {'oboe': [2, 3], 'guitar': [2, 3]}
+    >>> g.get_bars(['oboe', 'guitar'], 1, 3)
+    [{'oboe': [2], 'guitar': [2]}, {'oboe': [3], 'guitar': [3]}]
 
     """
     def __init__(self):
@@ -41,9 +51,10 @@ class Graph(object):
         for i in instruments:
             self.graph[i].extend(bars)
 
-    def get_bars(self, instruments=None, start=0, end=None):
-        # TODO: Should this return a dict or a new Graph instance?
-        # TODO: parse args
+    @property
+    def duration
+
+    def get_parts(self, instruments=None, start=0, end=None):
         if instruments is None:
             instruments = self.instruments
         if isinstance(instruments, basestring):
@@ -58,16 +69,34 @@ class Graph(object):
 
         return subgraph
 
+    def get_bars(self, instruments=None, start=0, end=None):
+        if instruments is None:
+            instruments = self.instruments
+        if isinstance(instruments, basestring):
+            instruments = [instruments]
+
+
+        if end is None:
+            end = len(part)  use self.duration here
+
+        bars = []
+        for index in range(start, end):
+            d = {}
+            for instrument in instruments:
+                d[instrument] = self.graph[instrument][index]
+
+
+
+        for i in instruments:
+            part = self.graph[i]
+            if end is None:
+                end = len(part)
+            subgraph[i] = part[start:end]
+
+        return bars
+
     def insert_bar(self, bar, index, instrument):
         self.graph[instrument][index] = bar
-
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
