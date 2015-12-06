@@ -4,22 +4,20 @@ from music21.note import Note, Rest
 from music21.pitch import Pitch
 from music21.chord import Chord
 from music21.stream import Measure, Part, Score
-from music21.meter import TimeSignature
 from music21.metadata import Metadata
-from music21.tempo import MetronomeMark
 from music21.duration import Duration
 from music21.layout import StaffGroup
 from music21.instrument import fromString as get_instrument
 from music21.clef import BassClef
 
-from utils import split_at_beats, join_quarters
+from utils import split_at_beats, join_quarters, group_into_bars
 
 
 def notate(song):
     score = setup_score(song)
     parts = setup_parts(song, score)
 
-    make_notation(song.bars, parts)
+    make_notation(song, parts)
 
     score.show('musicxml', '/Applications/Sibelius 7.5.app')
 
@@ -55,45 +53,27 @@ def setup_parts(song, score):
     return parts
 
 
-def make_notation(bars, parts):
-    # Make notation
-    previous_duration = None
-    previous_tempo = None
-    for bar in bars:
-        for i, bar_part in enumerate(bar.parts):
-            measure = notate_measure(previous_duration, previous_tempo, bar, bar_part)
-            parts[i].append(measure)
-        previous_duration = bar.duration
-        previous_tempo = bar.tempo
+def make_notation(song, parts):
+    for part, inst in zip(parts, song.instruments):
+        bars = group_into_bars(inst['music'])
 
+        for bar in bars:
+            measure = Measure()
 
-def notate_measure(previous_duration, previous_tempo, bar, part):
-    measure = Measure()
-    if bar.tempo and bar.tempo != previous_tempo:
-        mark = MetronomeMark(
-            number=bar.tempo,
-            referent=Duration(1)
-        )
-        measure.insert(0, mark)
-        measure.leftBarline = 'double'
-    if bar.duration != previous_duration:
-        ts = TimeSignature('{}/4'.format(bar.duration))
-        measure.timeSignature = ts
+            # Fix Durations
+            durations = [note['duration'] for note in bar]
 
-    # Fix Durations
-    durations = [note['duration'] for note in part]
+            components_list = split_at_beats(durations)
+            components_list = [join_quarters(note_components) for note_components in components_list]
+            for note, components in zip(bar, components_list):
+                note['durations'] = components
 
-    components_list = split_at_beats(durations)
-    components_list = [join_quarters(note_components) for note_components in components_list]
-    for note, components in zip(part, components_list):
-        note['durations'] = components
+            # Notate
+            for note in bar:
+                n = notate_note(note)
+                measure.append(n)
 
-    # Notate
-    for note in part:
-        n = notate_note(note)
-        measure.append(n)
-
-    return measure
+            part.append(measure)
 
 
 def notate_note(note):

@@ -6,13 +6,9 @@ song.title
 song.composer
 song.instruments
     instrument['name']
-song.bars
-    bar.tempo
-    bar.duration
-    bar.parts
-        part['notes']
-            note['duration']
-            note['pitch']
+    instrument['music']
+        note['duration']
+        note['pitch']
 
 """
 
@@ -57,13 +53,6 @@ INSTRUMENTS = {
 }
 
 
-class Bar(object):
-    def __init__(self, tempo=None):
-        self.tempo = tempo
-        self.duration = 4  # Hard coded to 4/4
-        self.parts = []
-
-
 class Song(object):
     title = 'Test Song'
     composer = 'Jonathan Marmor'
@@ -79,21 +68,20 @@ class Song(object):
         ]
         self.instruments = [INSTRUMENTS[i] for i in self.score_order]
 
-        self.bars = []
-        # Hard coded to 10 bars
-        for n in range(10):
-            bar = Bar(tempo=60)
-            self.bars.append(bar)
-            for instrument in self.instruments:
-                rhythm = harmonic_rhythm.choose(4)
-                part = []
-                for dur in rhythm:
-                    part.append({
-                        'duration': dur,
-                        'pitch': 60  # random.choice(instrument['all_notes'])
-                    })
+        for inst in self.instruments:
+            inst['music'] = []
 
-                bar.parts.append(part)
+            # Hard coded to 10 bars
+            # No ties across barlines yet
+            rhythm = []
+            for n in range(10):
+                rhythm.extend(harmonic_rhythm.choose(4))
+
+            for dur in rhythm:
+                inst['music'].append({
+                    'duration': dur,
+                    'pitch': 60  # random.choice(inst['all_notes'])
+                })
 
 
 if __name__ == '__main__':
