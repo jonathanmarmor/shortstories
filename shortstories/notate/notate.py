@@ -16,6 +16,15 @@ from utils import split_at_beats, join_quarters
 
 
 def notate(song):
+    score = setup_score(song)
+    parts = setup_parts(song, score)
+
+    make_notation(song.bars, parts)
+
+    score.show('musicxml', '/Applications/Sibelius 7.5.app')
+
+
+def setup_score(song):
     timestamp = datetime.datetime.utcnow()
     metadata = Metadata()
     metadata.title = song.title
@@ -25,6 +34,10 @@ def notate(song):
     score = Score()
     score.insert(0, metadata)
 
+    return score
+
+
+def setup_parts(song, score):
     parts = []
     for instrument in song.instruments:
         part = Part()
@@ -39,9 +52,7 @@ def notate(song):
 
     score.insert(0, StaffGroup(parts))
 
-    make_notation(song.bars, parts)
-
-    score.show('musicxml', '/Applications/Sibelius 7.5.app')
+    return parts
 
 
 def make_notation(bars, parts):
@@ -70,15 +81,15 @@ def notate_measure(previous_duration, previous_tempo, bar, part):
         measure.timeSignature = ts
 
     # Fix Durations
-    durations = [note['duration'] for note in part['notes']]
+    durations = [note['duration'] for note in part]
 
     components_list = split_at_beats(durations)
     components_list = [join_quarters(note_components) for note_components in components_list]
-    for note, components in zip(part['notes'], components_list):
+    for note, components in zip(part, components_list):
         note['durations'] = components
 
     # Notate
-    for note in part['notes']:
+    for note in part:
         n = notate_note(note)
         measure.append(n)
 

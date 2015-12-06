@@ -19,6 +19,7 @@ song.bars
 import random
 
 from notate import notate
+import harmonic_rhythm
 
 
 INSTRUMENTS = {
@@ -79,20 +80,19 @@ class Song(object):
         self.instruments = [INSTRUMENTS[i] for i in self.score_order]
 
         self.bars = []
-        # Hard coded to 5 bars
-        for n in range(5):
+        # Hard coded to 10 bars
+        for n in range(10):
             bar = Bar(tempo=60)
             self.bars.append(bar)
             for instrument in self.instruments:
+                rhythm = harmonic_rhythm.choose(4)
+                part = []
+                for dur in rhythm:
+                    part.append({
+                        'duration': dur,
+                        'pitch': 60  # random.choice(instrument['all_notes'])
+                    })
 
-                part = {
-                    'notes': [
-                        {
-                            'duration': 4,
-                            'pitch': 60  # random.choice(instrument['all_notes'])
-                        }
-                    ]
-                }
                 bar.parts.append(part)
 
 
