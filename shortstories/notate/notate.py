@@ -97,6 +97,10 @@ def notate_note(note):
         d.quarterLength = .125
         d = d.getGraceDuration()
     else:
+        # music21 docs say `fill` is for testing. I can't remember why I chose
+        # to use it originally. It works. But not for tuplets. Maybe this blog
+        # post contains a better solution:
+        # http://music21-mit.blogspot.com/2015/09/durations-and-durationtuples.html
         d.fill(note['durations'])
     n.duration = d
     return n

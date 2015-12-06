@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""A song with the bare minimum to be notated.
+"""A piece of music for Sonic Liberation Players
 
 song.title
 song.composer
@@ -72,7 +72,7 @@ class Song(object):
             inst['music'] = []
 
             # Testing ties across barlines
-            rhythm = [1.5, 1.5, 1.5, 1.5, 2]
+            rhythm = []
             for _ in range(5):
                 rhythm.extend(harmonic_rhythm.choose(8))
 
