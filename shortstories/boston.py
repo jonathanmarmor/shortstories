@@ -22,6 +22,11 @@ from notate import notate
 
 
 INSTRUMENTS = {
+    'soprano': {
+        'name': 'soprano',
+        'nickname': 's',
+        'all_notes': range(60, 81 + 1),
+    },
     'flute': {
         'name': 'flute',
         'nickname': 'fl',
@@ -31,7 +36,23 @@ INSTRUMENTS = {
         'name': 'oboe',
         'nickname': 'ob',
         'all_notes': range(58, 92 + 1),
-    }
+    },
+    'piano_right': {
+        'name': 'piano',
+        'nickname': 'pno-r',
+        'all_notes': range(60, 108 + 1),
+    },
+    'piano_left': {
+        'name': 'piano',
+        'nickname': 'pno-l',
+        'all_notes': range(21, 60 + 1),
+        'clef': 'bass',
+    },
+    'cello': {
+        'name': 'cello',
+        'nickname': 'vc',
+        'all_notes': range(36, 76 + 1),
+    },
 }
 
 
@@ -47,10 +68,15 @@ class Song(object):
     composer = 'Jonathan Marmor'
 
     def __init__(self):
-        self.instruments = [
-            INSTRUMENTS['oboe'],
-            INSTRUMENTS['flute']
+        self.score_order = [
+            'soprano',
+            'flute',
+            'oboe',
+            'piano_right',
+            'piano_left',
+            'cello'
         ]
+        self.instruments = [INSTRUMENTS[i] for i in self.score_order]
 
         self.bars = []
         # Hard coded to 5 bars
@@ -63,7 +89,7 @@ class Song(object):
                     'notes': [
                         {
                             'duration': 4,
-                            'pitch': random.choice(instrument['all_notes'])
+                            'pitch': 60  # random.choice(instrument['all_notes'])
                         }
                     ]
                 }

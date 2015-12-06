@@ -10,6 +10,7 @@ from music21.tempo import MetronomeMark
 from music21.duration import Duration
 from music21.layout import StaffGroup
 from music21.instrument import fromString as get_instrument
+from music21.clef import BassClef
 
 from utils import split_at_beats, join_quarters
 
@@ -28,7 +29,11 @@ def notate(song):
     for instrument in song.instruments:
         part = Part()
         m21_instrument = get_instrument(instrument['name'])
+
         part.insert(0, m21_instrument)
+        if instrument.get('clef') is 'bass':
+            part.insert(0, BassClef())
+
         parts.append(part)
         score.insert(0, part)
 
