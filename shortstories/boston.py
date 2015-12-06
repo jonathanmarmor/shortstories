@@ -58,6 +58,7 @@ class Song(object):
             bar = Bar(tempo=60)
             self.bars.append(bar)
             for instrument in self.instruments:
+
                 part = {
                     'notes': [
                         {
