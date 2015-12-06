@@ -15,7 +15,6 @@ song.instruments
 import random
 
 from notate import notate
-import harmonic_rhythm
 
 
 INSTRUMENTS = {
@@ -71,11 +70,8 @@ class Song(object):
         for inst in self.instruments:
             inst['music'] = []
 
-            # Hard coded to 10 bars
-            # No ties across barlines yet
-            rhythm = []
-            for n in range(10):
-                rhythm.extend(harmonic_rhythm.choose(4))
+            # Testing ties across barlines
+            rhythm = [1.5, 1.5, 1.5, 1.5, 2]
 
             for dur in rhythm:
                 inst['music'].append({
