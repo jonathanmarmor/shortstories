@@ -62,24 +62,25 @@ def join_quarters(dur_components):
     return new_durs
 
 
-def group_into_bars(notes):
-    bars = []
-    bar = []
-    total = 0
-    for note in notes:
-        bar.append(note)
+# Unused
+# def group_into_bars(notes):
+#     bars = []
+#     bar = []
+#     total = 0
+#     for note in notes:
+#         bar.append(note)
 
-        total += note['duration']
+#         total += note['duration']
 
-        if total > 4:
-            raise Exception('Ties over barlines arent allowed yet. Sorry.')
+#         if total > 4:
+#             raise Exception('Ties over barlines arent allowed yet. Sorry.')
 
-        if total == 4:
-            bars.append(bar)
-            bar = []
-            total = 0
+#         if total == 4:
+#             bars.append(bar)
+#             bar = []
+#             total = 0
 
-    if len(notes) != sum([len([n for n in b]) for b in bars]):
-        raise Exception('The number of notes in the input is not the same as the number of notes in the output. Input: {} Output: {}.'.format(notes, bars))
+#     if len(notes) != sum([len([n for n in b]) for b in bars]):
+#         raise Exception('The number of notes in the input is not the same as the number of notes in the output. Input: {} Output: {}.'.format(notes, bars))
 
-    return bars
+#     return bars

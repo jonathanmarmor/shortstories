@@ -3,14 +3,14 @@ import datetime
 from music21.note import Note, Rest
 from music21.pitch import Pitch
 from music21.chord import Chord
-from music21.stream import Measure, Part, Score
+from music21.stream import Part, Score
 from music21.metadata import Metadata
 from music21.duration import Duration
 from music21.layout import StaffGroup
 from music21.instrument import fromString as get_instrument
 from music21.clef import BassClef
 
-from utils import split_at_beats, join_quarters, group_into_bars
+from utils import split_at_beats, join_quarters
 
 
 def notate(song):
@@ -53,27 +53,22 @@ def setup_parts(song, score):
     return parts
 
 
+def decorate_notes_with_split_durations(notes):
+    """Decorate note objects with durations split at beats, which should be tied together"""
+    durations = [note['duration'] for note in notes]
+    components_list = split_at_beats(durations)
+    components_list = [join_quarters(note_components) for note_components in components_list]
+    for note, components in zip(notes, components_list):
+        note['durations'] = components
+
+
 def make_notation(song, parts):
     for part, inst in zip(parts, song.instruments):
-        bars = group_into_bars(inst['music'])
 
-        for bar in bars:
-            measure = Measure()
+        decorate_notes_with_split_durations(inst['music'])
 
-            # Fix Durations
-            durations = [note['duration'] for note in bar]
-
-            components_list = split_at_beats(durations)
-            components_list = [join_quarters(note_components) for note_components in components_list]
-            for note, components in zip(bar, components_list):
-                note['durations'] = components
-
-            # Notate
-            for note in bar:
-                n = notate_note(note)
-                measure.append(n)
-
-            part.append(measure)
+        for note in inst['music']:
+            part.append(notate_note(note))
 
 
 def notate_note(note):
