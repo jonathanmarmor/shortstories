@@ -12,74 +12,42 @@ song.instruments
 
 """
 
-import random
+# import random
 
 from notate import notate
 
-
-INSTRUMENTS = {
-    'soprano': {
-        'name': 'soprano',
-        'nickname': 's',
-        'all_notes': range(60, 81 + 1),
-    },
-    'flute': {
-        'name': 'flute',
-        'nickname': 'fl',
-        'all_notes': range(60, 96 + 1),
-    },
-    'oboe': {
-        'name': 'oboe',
-        'nickname': 'ob',
-        'all_notes': range(58, 92 + 1),
-    },
-    'piano_right': {
-        'name': 'piano',
-        'nickname': 'pno-r',
-        'all_notes': range(60, 108 + 1),
-    },
-    'piano_left': {
-        'name': 'piano',
-        'nickname': 'pno-l',
-        'all_notes': range(21, 60 + 1),
-        'clef': 'bass',
-    },
-    'cello': {
-        'name': 'cello',
-        'nickname': 'vc',
-        'all_notes': range(36, 76 + 1),
-    },
-}
+from instruments import instruments
+from ensemble import Ensemble
+# from graph import Graph
 
 
 class Song(object):
-    title = 'Test Song'
+    title = 'Working Title'
     composer = 'Jonathan Marmor'
 
     def __init__(self):
-        self.score_order = [
-            'soprano',
-            'flute',
-            'oboe',
-            'piano_right',
-            'piano_left',
-            'cello'
-        ]
-        self.instruments = [INSTRUMENTS[i] for i in self.score_order]
+        self.ensemble = Ensemble(instruments)
 
-        for inst in self.instruments:
-            inst['music'] = []
+        # self.graph = Graph(self.ensemble)
 
-            # Testing ties across barlines
-            rhythm = [1.5, 1.5, 1.5, 1.5, 2]
+        self.make_music()
 
-            for dur in rhythm:
-                inst['music'].append({
-                    'duration': dur,
-                    'pitch': 60  # random.choice(inst['all_notes'])
-                })
+    def make_music(self):
+        phrase = []
+        for _ in range(16):
+            phrase.append({
+                'pitch': 60,
+                'duration': .25
+            })
+
+        self.ensemble.flute['music'].extend(phrase)
+
+    # def ___(self):
+    #     offset = 0
+    #     for soloist in self.instruments:
+    #         offset = random.randint(offset + 4, offset + 16)
 
 
 if __name__ == '__main__':
     song = Song()
-    notate(song)
+    notate(song.title, song.composer, song.ensemble._list)

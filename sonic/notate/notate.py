@@ -13,20 +13,20 @@ from music21.clef import BassClef
 from utils import split_at_beats, join_quarters
 
 
-def notate(song):
-    score = setup_score(song)
-    parts = setup_parts(song, score)
+def notate(title, composer, instruments):
+    score = setup_score(title, composer)
+    parts = setup_parts(instruments, score)
 
-    make_notation(song, parts)
+    make_notation(instruments, parts)
 
     score.show('musicxml', '/Applications/Sibelius 7.5.app')
 
 
-def setup_score(song):
+def setup_score(title, composer):
     timestamp = datetime.datetime.utcnow()
     metadata = Metadata()
-    metadata.title = song.title
-    metadata.composer = song.composer
+    metadata.title = title
+    metadata.composer = composer
     metadata.date = timestamp.strftime('%Y/%m/%d')
 
     score = Score()
@@ -35,9 +35,9 @@ def setup_score(song):
     return score
 
 
-def setup_parts(song, score):
+def setup_parts(instruments, score):
     parts = []
-    for instrument in song.instruments:
+    for instrument in instruments:
         part = Part()
         m21_instrument = get_instrument(instrument['name'])
 
@@ -62,8 +62,8 @@ def decorate_notes_with_split_durations(notes):
         note['durations'] = components
 
 
-def make_notation(song, parts):
-    for part, inst in zip(parts, song.instruments):
+def make_notation(instruments, parts):
+    for part, inst in zip(parts, instruments):
 
         decorate_notes_with_split_durations(inst['music'])
 
