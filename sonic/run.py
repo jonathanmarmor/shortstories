@@ -12,13 +12,31 @@ song.instruments
 
 """
 
-# import random
+import random
 
 from notate import notate
 
 from instruments import instruments
 from ensemble import Ensemble
 # from graph import Graph
+
+
+def make_phrase():
+    phrase = []
+    total_duration = 0  # in microbeats
+    length = 64
+    while total_duration < length:
+        pitch = random.choice(['rest', 'rest', 'rest', 'rest', 'rest', 'rest', 60, 61, 62, 63, 64, 65, 66, 67, 68])
+        duration = random.choice([.25, .5, .75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0])
+        if total_duration + duration > length:
+            duration = length - total_duration
+
+        phrase.append({
+            'pitch': pitch,
+            'duration': duration
+        })
+        total_duration += duration
+    return phrase
 
 
 class Song(object):
@@ -33,19 +51,10 @@ class Song(object):
         self.make_music()
 
     def make_music(self):
-        phrase = []
-        for _ in range(16):
-            phrase.append({
-                'pitch': 60,
-                'duration': .25
-            })
+        phrase = make_phrase()
 
-        self.ensemble.flute['music'].extend(phrase)
-
-    # def ___(self):
-    #     offset = 0
-    #     for soloist in self.instruments:
-    #         offset = random.randint(offset + 4, offset + 16)
+        for instrument in self.ensemble:
+            instrument['music'] = phrase
 
 
 if __name__ == '__main__':

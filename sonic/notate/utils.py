@@ -62,6 +62,22 @@ def join_quarters(dur_components):
     return new_durs
 
 
+def join_rests(music):
+    """Find consecutive notes that are rests and join them into one rest with the full duration"""
+    result = []
+    for is_rest, notes in itertools.groupby(music, lambda x: x.get('pitch') == 'rest'):
+        if is_rest:
+            duration = sum(n['duration'] for n in notes)
+            note = {
+                'pitch': 'rest',
+                'duration': duration
+            }
+            result.append(note)
+        else:
+            result.extend(notes)
+    return result
+
+
 # Unused
 # def group_into_bars(notes):
 #     bars = []

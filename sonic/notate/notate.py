@@ -10,7 +10,7 @@ from music21.layout import StaffGroup
 from music21.instrument import fromString as get_instrument
 from music21.clef import BassClef
 
-from utils import split_at_beats, join_quarters
+from utils import split_at_beats, join_quarters, join_rests
 
 
 def notate(title, composer, instruments):
@@ -65,9 +65,13 @@ def decorate_notes_with_split_durations(notes):
 def make_notation(instruments, parts):
     for part, inst in zip(parts, instruments):
 
-        decorate_notes_with_split_durations(inst['music'])
+        music = inst['music'][:]  # Ensure there isn't any shared music between the parts
 
-        for note in inst['music']:
+        music = join_rests(music)
+
+        decorate_notes_with_split_durations(music)
+
+        for note in music:
             part.append(notate_note(note))
 
 
